@@ -1,18 +1,18 @@
 # amplify-gen2-workshop
 
-workshop template for amplify gen2
-
 ## 概要
 
 このワークショップでは、AWS Amplify Gen2 と Kiro CLI を使用して、ログイン機能付きの Todo アプリケーションを構築します。
 
-### 前提条件
+## 前提条件
 
 - AWS アカウント（Admin 相当の権限）
 - AWS ビルダー ID
 - GitHub アカウント
 
 ## ワークショップの内容
+
+作業時間目安：1 時間
 
 ### 1. 初期設定 ([docs/1\_初期設定.md](docs/1_初期設定.md))
 
