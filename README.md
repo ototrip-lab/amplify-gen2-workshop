@@ -32,6 +32,10 @@ workshop template for amplify gen2
 
 - Amplify Hosting の設定
 
+### 4. 後処理 ([docs/4\_後処理.md](4_後処理.md))
+
+- ワークショップで利用したリソースの削除
+
 ## ファイル構成
 
 ```
