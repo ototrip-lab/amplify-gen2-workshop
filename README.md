@@ -32,6 +32,10 @@ workshop template for amplify gen2
 
 - Amplify Hosting の設定
 
+### 4. 後処理 ([docs/4\_後処理.md](4_後処理.md))
+
+- ワークショップで利用したリソースの削除
+
 ## ファイル構成
 
 ```
@@ -44,7 +48,8 @@ amplify-gen2-workshop/
 ├── docs/
 │   ├── 1_初期設定.md                # Step1: 環境セットアップ手順
 │   ├── 2_アプリ作成.md              # Step2: Kiro CLIでTodoアプリ開発
-│   └── 3_ホスティング.md             # Step3: Amplify Hostingデプロイ
+│   ├── 3_ホスティング.md             # Step3: Amplify Hostingデプロイ
+│   └── 4_後処理.md                  # Step4: 環境の削除手順
 ├── todo-app/
 │   ├── amplify/
 │   │   ├── auth/
@@ -55,24 +60,25 @@ amplify-gen2-workshop/
 │   │   ├── package.json            # Amplifyバックエンド依存関係
 │   │   └── tsconfig.json           # Amplify用TypeScript設定
 │   ├── public/
-│   │   └── vite.svg                
+│   │   └── vite.svg
 │   ├── src/
 │   │   ├── assets/
-│   │   │   └── react.svg          
+│   │   │   └── react.svg
 │   │   ├── App.css                 # Appコンポーネント用CSS
 │   │   ├── App.tsx                 # メインAppコンポーネント
 │   │   ├── index.css               # グローバルCSS
 │   │   └── main.tsx                # Reactエントリーポイント
-│   ├── .gitignore                  
-│   ├── eslint.config.js            
+│   ├── .gitignore
+│   ├── eslint.config.js
 │   ├── index.html                  # HTMLテンプレート
-│   ├── package-lock.json           
-│   ├── package.json            
-│   ├── tsconfig.app.json           
-│   ├── tsconfig.json               
-│   ├── tsconfig.node.json          
-│   ├── vite.config.ts             
-│   └── README.md                   
-├── LICENSE                         
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   ├── vite.config.ts
+│   └── README.md
+├── amplify.yml                     # ビルドとデプロイの設定を定義するファイル
+├── LICENSE
 └── README.md                       # ワークショップ全体のREADME
 ```
