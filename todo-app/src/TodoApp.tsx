@@ -1,25 +1,49 @@
 import { useState, useEffect } from 'react'
 import { generateClient } from 'aws-amplify/data'
+import { Flex, Button, TextField, SelectField, TextAreaField, Badge } from '@aws-amplify/ui-react'
 import type { Schema } from '../amplify/data/resource'
 
 const client = generateClient<Schema>()
 
 type Todo = Schema['Todo']['type']
 
-export default function TodoApp() {
+interface TodoAppProps {
+  signOut: () => void
+  user: any
+}
+
+export default function TodoApp({ signOut, user }: TodoAppProps) {
   const [todos, setTodos] = useState<Todo[]>([])
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([])
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [status, setStatus] = useState<'pending' | 'in_progress' | 'completed'>('pending')
   const [category, setCategory] = useState('')
+  const [currentFilter, setCurrentFilter] = useState('all')
 
   useEffect(() => {
     fetchTodos()
   }, [])
 
+  useEffect(() => {
+    filterTodos()
+  }, [todos, currentFilter])
+
   const fetchTodos = async () => {
     const { data } = await client.models.Todo.list()
     setTodos(data)
+  }
+
+  const filterTodos = () => {
+    let filtered = todos
+    if (currentFilter === 'pending') {
+      filtered = todos.filter(todo => todo.status === 'pending')
+    } else if (currentFilter === 'in_progress') {
+      filtered = todos.filter(todo => todo.status === 'in_progress')
+    } else if (currentFilter === 'completed') {
+      filtered = todos.filter(todo => todo.status === 'completed')
+    }
+    setFilteredTodos(filtered)
   }
 
   const createTodo = async () => {
@@ -49,74 +73,175 @@ export default function TodoApp() {
     fetchTodos()
   }
 
-  return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1>Todo アプリ</h1>
-      
-      <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-        <h3>新しいTodoを追加</h3>
-        <input
-          type="text"
-          placeholder="タイトル"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
-        />
-        <textarea
-          placeholder="内容"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          style={{ width: '100%', marginBottom: '10px', padding: '8px', minHeight: '60px' }}
-        />
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as any)}
-          style={{ marginBottom: '10px', padding: '8px' }}
-        >
-          <option value="pending">未着手</option>
-          <option value="in_progress">進行中</option>
-          <option value="completed">完了</option>
-        </select>
-        <input
-          type="text"
-          placeholder="カテゴリ (カンマ区切り)"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
-        />
-        <button onClick={createTodo} style={{ padding: '10px 20px' }}>
-          追加
-        </button>
-      </div>
+  const getStatusBadgeVariation = (status: string) => {
+    switch (status) {
+      case 'completed': return 'success'
+      case 'in_progress': return 'warning'
+      default: return 'info'
+    }
+  }
 
-      <div>
-        <h3>Todo一覧</h3>
-        {todos.map((todo) => (
-          <div key={todo.id} style={{ marginBottom: '15px', padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
-            <h4>{todo.title}</h4>
-            <p>{todo.content}</p>
-            <p>ステータス: 
-              <select
-                value={todo.status || 'pending'}
-                onChange={(e) => updateTodo(todo.id, e.target.value as any)}
-                style={{ marginLeft: '10px', padding: '4px' }}
-              >
-                <option value="pending">未着手</option>
-                <option value="in_progress">進行中</option>
-                <option value="completed">完了</option>
-              </select>
-            </p>
-            {todo.category && todo.category.length > 0 && (
-              <p>カテゴリ: {todo.category.join(', ')}</p>
-            )}
-            <button 
-              onClick={() => deleteTodo(todo.id)}
-              style={{ padding: '5px 10px', backgroundColor: '#ff4444', color: 'white', border: 'none', borderRadius: '4px' }}
-            >
-              削除
-            </button>
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'pending': return '未着手'
+      case 'in_progress': return '進行中'
+      case 'completed': return '完了'
+      default: return status
+    }
+  }
+
+  return (
+    <div className="app-container">
+      {/* Header */}
+      <header className="header">
+        <div className="header-content">
+          <h1 className="header-title">Todo アプリ</h1>
+          <div className="header-user">
+            <span className="header-user-text">
+              こんにちは、{user?.signInDetails?.loginId}さん！
+            </span>
+            <Button onClick={signOut} variation="primary" size="small">
+              サインアウト
+            </Button>
           </div>
-        ))}
+        </div>
+      </header>
+
+      {/* Main Layout */}
+      <div className="main-layout">
+        {/* Sidebar */}
+        <aside className="sidebar">
+          <div className="sidebar-content">
+            <h2 className="sidebar-title">ナビゲーション</h2>
+            <nav>
+              <ul className="nav-menu">
+                <li className="nav-item">
+                  <a 
+                    className={`nav-link ${currentFilter === 'all' ? 'active' : ''}`}
+                    onClick={() => setCurrentFilter('all')}
+                  >
+                    全てのTodo
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a 
+                    className={`nav-link ${currentFilter === 'pending' ? 'active' : ''}`}
+                    onClick={() => setCurrentFilter('pending')}
+                  >
+                    未着手
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a 
+                    className={`nav-link ${currentFilter === 'in_progress' ? 'active' : ''}`}
+                    onClick={() => setCurrentFilter('in_progress')}
+                  >
+                    進行中
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a 
+                    className={`nav-link ${currentFilter === 'completed' ? 'active' : ''}`}
+                    onClick={() => setCurrentFilter('completed')}
+                  >
+                    完了済み
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="main-content">
+          <div className="content-container">
+            {/* Todo Creation Form */}
+            <div className="form-card">
+              <h2 className="form-title">新しいTodoを追加</h2>
+              <Flex direction="column" gap="1.5rem">
+                <TextField
+                  label="タイトル"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Todoのタイトルを入力"
+                />
+                <TextAreaField
+                  label="内容"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Todoの詳細を入力"
+                  rows={3}
+                />
+                <Flex gap="1rem">
+                  <SelectField
+                    label="ステータス"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as any)}
+                  >
+                    <option value="pending">未着手</option>
+                    <option value="in_progress">進行中</option>
+                    <option value="completed">完了</option>
+                  </SelectField>
+                  <TextField
+                    label="カテゴリ"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    placeholder="カテゴリをカンマ区切りで入力"
+                  />
+                </Flex>
+                <Button onClick={createTodo} variation="primary" size="large">
+                  追加
+                </Button>
+              </Flex>
+            </div>
+
+            {/* Todo List */}
+            <div>
+              <h2 className="section-title">
+                Todo一覧 <span className="todo-count">({filteredTodos.length}件)</span>
+              </h2>
+              <div>
+                {filteredTodos.map((todo) => (
+                  <div key={todo.id} className="todo-card">
+                    <div className="todo-header">
+                      <h3 className="todo-title">{todo.title}</h3>
+                      <Badge variation={getStatusBadgeVariation(todo.status || 'pending')}>
+                        {getStatusText(todo.status || 'pending')}
+                      </Badge>
+                    </div>
+                    <p className="todo-content">{todo.content}</p>
+                    {todo.category && todo.category.length > 0 && (
+                      <div className="todo-categories">
+                        {todo.category.map((cat, index) => (
+                          <Badge key={index} variation="info" size="small">{cat}</Badge>
+                        ))}
+                      </div>
+                    )}
+                    <div className="todo-actions">
+                      <SelectField
+                        label="ステータス"
+                        value={todo.status || 'pending'}
+                        onChange={(e) => updateTodo(todo.id, e.target.value as any)}
+                        size="small"
+                      >
+                        <option value="pending">未着手</option>
+                        <option value="in_progress">進行中</option>
+                        <option value="completed">完了</option>
+                      </SelectField>
+                      <Button 
+                        onClick={() => deleteTodo(todo.id)}
+                        variation="destructive"
+                        size="small"
+                      >
+                        削除
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   )

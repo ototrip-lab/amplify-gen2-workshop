@@ -7,13 +7,7 @@ function App() {
   return (
     <Authenticator>
       {({ signOut, user }) => (
-        <div>
-          <div style={{ textAlign: 'right', padding: '10px' }}>
-            <span>こんにちは、{user?.signInDetails?.loginId}さん！</span>
-            <button onClick={signOut} style={{ marginLeft: '10px' }}>サインアウト</button>
-          </div>
-          <TodoApp />
-        </div>
+        <TodoApp signOut={signOut || (() => {})} user={user} />
       )}
     </Authenticator>
   )
