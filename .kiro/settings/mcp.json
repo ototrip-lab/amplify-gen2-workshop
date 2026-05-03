@@ -1,13 +1,39 @@
 {
   "mcpServers": {
-    "aws-mcp": {
-      "command": "uvx",
-      "timeout": 100000,
-      "transport": "stdio",
-      "args": [
-        "mcp-proxy-for-aws@latest",
-        "https://aws-mcp.us-east-1.api.aws/mcp"
-      ]
+    "aws-knowledge-mcp-server": {
+      "url": "https://knowledge-mcp.global.api.aws",
+      "type": "http",
+      "disabled": false
+    }
+  },
+  "powers": {
+    "mcpServers": {
+      "power-aws-amplify-aws-mcp": {
+        "command": "uvx",
+        "timeout": 100000,
+        "transport": "stdio",
+        "args": [
+          "mcp-proxy-for-aws@latest",
+          "--log-level",
+          "ERROR",
+          "https://aws-mcp.us-east-1.api.aws/mcp"
+        ],
+        "autoApprove": [
+          "aws___search_documentation",
+          "aws___read_documentation"
+        ]
+      },
+      "power-aws-infrastructure-as-code-awslabs.aws-iac-mcp-server": {
+        "command": "uvx",
+        "args": [
+          "awslabs.aws-iac-mcp-server@latest"
+        ],
+        "env": {
+          "AWS_PROFILE": "your-named-profile",
+          "FASTMCP_LOG_LEVEL": "ERROR"
+        },
+        "disabled": false
+      }
     }
   }
 }
