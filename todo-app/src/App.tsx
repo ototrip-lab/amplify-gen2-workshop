@@ -1,6 +1,6 @@
-import { Authenticator } from '@aws-amplify/ui-react'
-import '@aws-amplify/ui-react/styles.css'
-import './App.css'
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import './App.css';
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         </main>
       )}
     </Authenticator>
-  )
+  );
 }
 
-export default App
+export default App;
