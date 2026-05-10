@@ -1,7 +1,7 @@
-import { Authenticator } from '@aws-amplify/ui-react'
-import '@aws-amplify/ui-react/styles.css'
-import TodoApp from './TodoApp'
-import './App.css'
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import './App.css';
+import TodoApp from './TodoApp';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
         <TodoApp signOut={signOut || (() => {})} user={user} />
       )}
     </Authenticator>
-  )
+  );
 }
 
-export default App
+export default App;
