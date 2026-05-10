@@ -1,7 +1,7 @@
-import { Authenticator } from '@aws-amplify/ui-react'
-import '@aws-amplify/ui-react/styles.css'
-import TodoApp from './TodoApp'
-import './App.css'
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import './App.css';
+import TodoApp from './TodoApp';
 
 function App() {
   return (
@@ -10,13 +10,15 @@ function App() {
         <div>
           <div style={{ textAlign: 'right', padding: '10px' }}>
             <span>こんにちは、{user?.signInDetails?.loginId}さん！</span>
-            <button onClick={signOut} style={{ marginLeft: '10px' }}>サインアウト</button>
+            <button onClick={signOut} style={{ marginLeft: '10px' }}>
+              サインアウト
+            </button>
           </div>
           <TodoApp />
         </div>
       )}
     </Authenticator>
-  )
+  );
 }
 
-export default App
+export default App;
